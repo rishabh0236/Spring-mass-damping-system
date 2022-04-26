@@ -1,7 +1,6 @@
 classdef systemDynamics < handle
     properties
       state
-      output
       Ts
       limit
       m
@@ -10,18 +9,18 @@ classdef systemDynamics < handle
     end
     methods
         %---constructor-------------------------
-        function self = systemDynamics(alpha,P)
-            z0=0;
-            zdot0=0;
-            self.state=[z0;zdot0;];
-            self.Ts = P.Ts;
-            self.limit = P.force_max;   % saturation limit
+        function self = systemDynamics()
+            y0 = 0;    % initial condition for y
+            ydot0 = 0;  % initial condition for ydot
+            self.state=[y0;ydot0;];
+            self.Ts = 0.01;
+            self.limit = 1.0;   % saturation limit
             % system parameters
-            self.m = P.m; 
-            self.k = P.k;
-            self.b = P.b;
+            self.m = 4.493; 
+            self.k = 2.943;
+            self.b = 0.499;
             % modify the system parameters by random value
-                
+            alpha = 0.2;        % Uncertainty parameter
             self.m = self.m * (1+2*alpha*rand-alpha);
             self.k = self.k * (1+2*alpha*rand-alpha); 
             self.b = self.b * (1+2*alpha*rand-alpha);
@@ -29,18 +28,17 @@ classdef systemDynamics < handle
         
         function xdot = f(self, state,u)
             % Return xdot = f(x,u)
-            z = state(1); 
-            zdot = state(2);
+            y = state(1); 
+            ydot = state(2);
             % The equations of motion.
-            zddot = -(self.b/self.m) * zdot - (self.k/self.m) * z + (1/self.m) * u;
+            yddot = -(self.b/self.m) * ydot - (self.k/self.m) * y + (1/self.m) * u;
             % build xdot and return
-            xdot = [zdot; zddot];
+            xdot = [ydot; yddot];
         end 
         
         function y = h(self) 
             % y = h(x)
-            z = self.state(1);
-            y=z;
+            y = self.state(1); 
         end
         
         function y = update(self, u)
@@ -48,8 +46,7 @@ classdef systemDynamics < handle
             % and returns output y.
             u = self.saturate(u, self.limit);   % saturate input
             self.rk4_step(u);                   % propagate state by one time step
-            y = self.h();
-            self.output=y;   % compute the output at current time
+            y = self.h();                       % compute the output at current time
         end
         
         function self = rk4_step(self, u)

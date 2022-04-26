@@ -10,21 +10,21 @@ classdef systemAnimation
     end
     methods
         %------constructor-----------
-        function self = systemAnimation(P)
-            self.width=3.0;
+        function self = systemAnimation()
+            self.width=2.0;
             self.height=2.0;
             figure(1), clf
             % draw ground track
-            plot([-2*5, 2*5],[0,0],'k');
+            plot([-2*3, 2*3],[0,0],'k');
             hold on
             % initialize the box, spring, and damper
             self=self.draw_box(0); 
             self=self.draw_spring(0);
             self=self.draw_damper(0);
             % Set the x,y axis limits
-            axis([-2*3, 2*5, -0.1, 2*5]);
+            axis([-3*3, 3*3, -0.1, 3*3]);
             xlabel('z'); % label x-axis
-            
+            xline(-2*3);
         end
         
         function self=update(self, state)
@@ -42,7 +42,7 @@ classdef systemAnimation
             Y = [0,0,self.height,self.height];
             % plot or update cart
             if isempty(self.box_handle)
-                self.box_handle = fill(X,Y,'g');
+                self.box_handle = fill(X,Y,'r');
             else
                 set(self.box_handle,'XData',X);
             end   
@@ -54,7 +54,7 @@ classdef systemAnimation
             Y=  [0.2,0.2];
             % plot or update rod
             if isempty(self.damper_handle)
-                self.damper_handle = plot(X, Y, 'b');
+                self.damper_handle = plot(X, Y, 'g');
             else
                 set(self.damper_handle,'XData', X, 'YData', Y);
             end

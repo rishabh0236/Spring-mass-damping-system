@@ -1,6 +1,9 @@
 classdef dataPlotter < handle
     properties
-        
+        %initial conditions
+        t_end=100;
+        t_start=0;
+        t_plot=0.1;
         % data histories
         time_history
         r_history 
@@ -16,13 +19,13 @@ classdef dataPlotter < handle
     end
     methods
         %--constructor--------------------------
-        function self = dataPlotter(P)
+        function self = dataPlotter()
            % Instantiate lists to hold the time and data histories
-           self.time_history=NaN*ones(1,(P.t_end-P.t_start)/P.t_plot);
-           self.r_history=NaN*ones(1,(P.t_end-P.t_start)/P.t_plot);
-           self.y_history=NaN*ones(1,(P.t_end-P.t_start)/P.t_plot);
-           self.ydot_history=NaN*ones(1,(P.t_end-P.t_start)/P.t_plot);
-           self.u_history= NaN*ones(1,(P.t_end-P.t_start)/P.t_plot);
+           self.time_history=NaN*ones(1,(self.t_end-self.t_start)/self.t_plot);
+           self.r_history=NaN*ones(1,(self.t_end-self.t_start)/self.t_plot);
+           self.y_history=NaN*ones(1,(self.t_end-self.t_start)/self.t_plot);
+           self.ydot_history=NaN*ones(1,(self.t_end-self.t_start)/self.t_plot);
+           self.u_history= NaN*ones(1,(self.t_end-self.t_start)/self.t_plot);
            self.index=1;
            % Create figure and axes handles
            figure(2), clf
@@ -39,7 +42,7 @@ classdef dataPlotter < handle
            subplot(313)
                 hold on
                 self.u_handle=plot(self.time_history,self.u_history, 'b');    
-                ylabel('FORCE(input)')
+                ylabel('u(input)')
                  
         end
         
